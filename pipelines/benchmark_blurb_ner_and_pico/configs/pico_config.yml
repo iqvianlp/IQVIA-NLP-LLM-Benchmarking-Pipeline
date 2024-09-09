@@ -1,0 +1,67 @@
+# Configuration for prompt template generation with prompt_gen.py.
+#
+# prompt_gen.py generates one prompt template for each task under `task` and each template under `templates`.
+#
+# A template signifies the semantic content (or "sections") of a prompt, and a template object contains:
+#
+#   - name (str): an arbitrary name for the template for reference
+#   - sections (list): the order and type of sections in the prompt, each containing:
+#       - name (str): the name of the section; must match a property of the task, except for the "example" and "cue"
+#           sections, which are populated by the example selection algorithm with the template defined in the
+#           task (see below), and actual experiment data at runtime
+#       - [optional] header (str): the text to be added as header to this section
+#
+# A task is a BLURB task and contains the following properties:
+#
+#   - dataset (str): the name of the BLURB dataset for this task
+#   - example (str): the structure of examples and cue; the actual examples will be populated by the example selection
+#       algorithm, so this is just the structure. Note that you can add as many "example" sections as you wish in the
+#       template, all will use the template defined here
+#   - section names (str): the text to go into each section of each template of the same name
+
+templates:
+  - name: short, zero-shot
+    sections:
+      - name: instructions
+      - name: cue
+  - name: long, zero-shot
+    sections:
+      - name: input-spec
+        header: "***INPUT***"
+      - name: output-spec
+        header: "***OUTPUT***"
+      - name: documentation
+        header: "***DOCUMENTATION***"
+      - name: cue
+        header: "***YOUR TURN***"
+tasks:
+  - dataset: EBM-PICO__participant
+    example: |
+      Input: {}
+      Output: {}
+    sections:
+      instructions: I am an excellent linguist and an expert in the biomedical domain. The task is to output a comma-delimited list of clinical trial participant entities found in the given clinical trial document.
+      input-spec: The input is a clinical trial document.
+      output-spec: The task is to identify all mentions of clinical trial participants in the input clinical trial document and return them in comma-separated list.
+      documentation: |
+        clinical trial participant: a person who takes part in a clinical trial.
+  - dataset: EBM-PICO__intervention
+    example: |
+      Input: {}
+      Output: {}
+    sections:
+      instructions: I am an excellent linguist and an expert in the biomedical domain. The task is to output a comma-delimited list of clinical trial intervention entities found in the given clinical trial document.
+      input-spec: The input is a clinical trial document.
+      output-spec: The task is to identify all mentions of clinical trial interventions in the input clinical trial document and return them in comma-separated list.
+      documentation: |
+        clinical trial intervention: a potential drug, medical device, activity, or procedure.
+  - dataset: EBM-PICO__outcome
+    example: |
+      Input: {}
+      Output: {}
+    sections:
+      instructions: I am an excellent linguist and an expert in the biomedical domain. The task is to output a comma-delimited list of clinical trial outcome entities found in the given clinical trial document.
+      input-spec: The input is a clinical trial document.
+      output-spec: The task is to identify all mentions of clinical trial outcomes in the input clinical trial document and return them in comma-separated list.
+      documentation: |
+        clinical trial outcome: the impact that a given intervention or exposure has on the health of clinical trial participants.

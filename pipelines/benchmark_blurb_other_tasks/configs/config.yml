@@ -1,0 +1,166 @@
+# Configuration for prompt template generation with prompt_gen.py.
+#
+# prompt_gen.py generates one prompt template for each task under `task` and each template under `templates`.
+#
+# A template signifies the semantic content (or "sections") of a prompt, and a template object contains:
+#
+#   - name (str): an arbitrary name for the template for reference
+#   - sections (list): the order and type of sections in the prompt, each containing:
+#       - name (str): the name of the section; must match a property of the task, except for the "example" and "cue"
+#           sections, which are populated by the example selection algorithm with the template defined in the
+#           task (see below), and actual experiment data at runtime
+#       - [optional] header (str): the text to be added as header to this section
+#
+# A task is a BLURB task and contains the following properties:
+#
+#   - dataset (str): the name of the BLURB dataset for this task
+#   - example (str): the structure of examples and cue; the actual examples will be populated by the example selection
+#       algorithm, so this is just the structure. Note that you can add as many "example" sections as you wish in the
+#       template, all will use the template defined here
+#   - section names (str): the text to go into each section of each template of the same name
+
+templates:
+  - name: short, zero-shot
+    sections:
+      - name: instructions
+      - name: cue
+  - name: short, few-shot (3)
+    sections:
+      - name: instructions
+      - name: example
+      - name: example
+      - name: example
+      - name: cue
+  - name: long, zero-shot
+    sections:
+      - name: input-spec
+        header: "***INPUT***"
+      - name: output-spec
+        header: "***OUTPUT***"
+      - name: documentation
+        header: "***DOCUMENTATION***"
+      - name: cue
+        header: "***YOUR TURN***"
+  - name: long, few-shot (3)
+    sections:
+      - name: input-spec
+        header: "***INPUT***"
+      - name: output-spec
+        header: "***OUTPUT***"
+      - name: documentation
+        header: "***DOCUMENTATION***"
+      - name: example
+        header: "***EXAMPLES***"
+      - name: example
+      - name: example
+      - name: cue
+        header: "***YOUR TURN***"
+tasks:
+  - dataset: BIOSSES
+    example: |  # tip: pipes (|) denote the start of a block in YAML, useful for multi-line strings
+        Input: sentence1: {} sentence2: {}
+        Output: {}
+    sections:
+      instructions: "Provide a score from 0 to 4 signifying the similarity between two sentences."
+      input-spec: The input is a pair of sentences named sentence1 and sentence2.
+      output-spec: The output is the semantic similarity in a continuous number from 0 (no relation) to 4 (equivalent).
+      documentation: |
+        0, the two sentences are on different topics.
+        1, the two sentences are not equivalent, but are on the same topic. 
+        2, the two sentences are not equivalent, but share some details.
+        3, the two sentences are roughly equivalent, but some important information differs/missing.
+        4, The two sentences are completely or mostly equivalent, as they mean the same thing.
+  - dataset: ChemProt
+    example: |
+      Input: {}
+      Output: {}
+    sections:
+      instructions: The task is to classify relations between a chemical labeled as @CHEMICAL$ and a gene labeled as @GENE$ for a sentence. The relation must be one of 'CPR:3', 'CPR:4', 'CPR:5', 'CPR:6', 'CPR:9', or 'false'.
+      input-spec: The input is a sentence where the chemical is labeled as @CHEMICAL$ and the gene is labeled as @GENE$ accordingly in a sentence.
+      output-spec: Your task is to select one out of the six types of relations ('CPR:3', 'CPR:4', 'CPR:5', 'CPR:6', 'CPR:9', and 'false') for the gene and chemical without any explanation or other characters.
+      documentation: |
+        CPR:3, which includes UPREGULATOR, ACTIVATOR, and INDIRECT UPREGULATOR
+        CPR:4, which includes DOWNREGULATOR, INHIBITOR ,and INDIRECT DOWNREGULATOR
+        CPR:5, which includes AGONIST, AGONIST ACTIVATOR, and AGONIST INHIBITOR
+        CPR:6, which includes ANTAGONIST
+        CPR:9, which includes SUBSTRATE, PRODUCT OF and SUBSTRATE PRODUCT OF
+        false, which indicates no relations
+  - dataset: DDI
+    example: |
+      Input: {}
+      Output: {}
+    sections:
+      instructions: The task is to classify relations between two drugs labeled as @DRUG$ for a sentence. The relation must be one of 'DDI-effect', 'DDI-mechanism', 'DDI-advise', 'DDI-false', or 'DDI-int'.
+      input-spec: The input is a sentence where the drugs are labeled as @DRUG$.
+      output-spec: Your task is to select one out of the five types of relations ('DDI-effect', 'DDI-mechanism', 'DDI-advise', 'DDI-false', and 'DDI-int') for the drugs without any explanation or other characters.
+      documentation: |
+        DDI-mechanism: This type is used to annotate DDIs that are described by their PK mechanism (e.g. Grepafloxacin may inhibit the metabolism of theobromine)
+        DDI-effect: This type is used to annotate DDIs describing an effect (e.g. In uninfected volunteers, 46% developed rash while receiving SUSTIVA and clarithromycin) or a PD mechanism (e.g. Chlorthalidone may potentiate the action of other antihypertensive drugs)
+        DDI-advise: This type is used when a recommendation or advice regarding a drug interaction is given (e.g. UROXATRAL should not be used in combination with other alpha-blockers)
+        DDI-int: This type is used when a DDI appears in the text without providing any additional information (e.g. The interaction of omeprazole and ketoconazole has been established)
+        DDI-false, This type is used when no DDI relation appears
+  - dataset: GAD
+    example: |
+      Input: {}
+      Output: {}
+    sections:
+      instructions: The task is to classify relations between a disease labeled as @DISEASE$ and a gene labeled as @GENE$ for a sentence. The response should be 1 if there is a relation or 0 if there is not.
+      input-spec: The input is a sentence where the disease is labeled as @DISEASE$ and the gene is labeled as @GENE$ accordingly in a sentence.
+      output-spec: Your task is to mark the relationship as either true (1) or false (0).
+      documentation: |
+        0: false
+        1: true
+  - dataset: HoC
+    example: |
+      Input: {}
+      Output: {}
+    sections:
+      instructions: |
+        Provide a comma-separated list classifying the given input with zero, one, or multiple of the following hallmarks of cancer:
+        - activating invasion and metastasis
+        - avoiding immune destruction
+        - sustaining proliferative signaling
+        - resisting cell death
+        - cellular energetics
+        - genomic instability and mutation
+        - evading growth suppressors
+        - inducing angiogenesis
+        - enabling replicative immortality
+        - tumor promoting inflammation
+      input-spec: The input is an abstract text.
+      output-spec: |
+        The output should be a comma-separated list, with relevant value for each class.
+        Include the class in the list if the article is related to that class.
+        Please note one article can be related to multiple classes.
+        Example output:
+          "resisting cell death","evading growth suppressors","avoiding immune destruction"
+      documentation: |
+        There are 10 cancer hallmarks you will need to decide whether the article is related to, including:
+        activating invasion and metastasis
+        sustaining proliferative signaling
+        resisting cell death
+        cellular energetics
+        genomic instability and mutation
+        evading growth suppressors
+        inducing angiogenesis
+        enabling replicative immortality
+        avoiding immune destruction
+        tumor promoting inflammation
+  - dataset: PubmedQA
+    example: |
+      Input: Question: {} Abstract: {}
+      Output: {}
+    sections:
+      instructions: Your task is to answer biomedical questions using the given abstract. Only output yes, no, or maybe as answer.
+      input-spec: The input is a question followed by an abstract.
+      output-spec: "Answer each question by providing one of the following options: yes, no, maybe."
+#     documentation: no documentation
+  - dataset: BioASQ
+    example: |
+      Input: {}
+      Output: {}
+    sections:
+      instructions: Your task is to answer biomedical questions. Only output yes or no.
+      input-spec: The input is a question.
+      output-spec: "Answer each question by providing one of the following options: yes, no."
+#     documentation: no documentation

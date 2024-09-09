@@ -1,0 +1,36 @@
+{
+    "required": [
+        "dataset_name",
+        "model_name",
+        "predictions"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "dataset_name": {
+            "type": "string",
+            "description": "The name of a BLURB Yes/No/Maybe QA dataset.",
+            "enum": [
+                "PubmedQA"
+            ]
+        },
+        "model_name": {
+            "type": "string",
+            "description": "The name of your model."
+        },
+        "predictions": {
+            "type": "object",
+            "description": "Your predictions over the Test Set.",
+            "additionalProperties": false,
+            "patternProperties": {
+                "^[0-9]{7,8}$": {
+                    "description": "Keys are of the format '{question_id}'. Values must be one of the enumerated strings below.",
+                    "enum": [
+                        "yes",
+                        "no",
+                        "maybe"
+                    ]
+                }
+            }
+        }
+    }
+}

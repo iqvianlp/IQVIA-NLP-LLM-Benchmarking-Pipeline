@@ -1,0 +1,47 @@
+# Configuration for prompt template generation with prompt_gen.py.
+
+templates:
+  - name: short, zero-shot
+    sections:
+      - name: instructions
+      - name: cue
+  - name: short, few-shot (3)
+    sections:
+      - name: instructions
+      - name: example
+      - name: example
+      - name: example
+      - name: cue
+  - name: long, zero-shot
+    sections:
+      - name: input-spec
+        header: "***INPUT***"
+      - name: output-spec
+        header: "***OUTPUT***"
+      - name: documentation
+        header: "***DOCUMENTATION***"
+      - name: cue
+        header: "***YOUR TURN***"
+  - name: long, few-shot (3)
+    sections:
+      - name: input-spec
+        header: "***INPUT***"
+      - name: output-spec
+        header: "***OUTPUT***"
+      - name: documentation
+        header: "***DOCUMENTATION***"
+      - name: example
+        header: "***EXAMPLES***"
+      - name: example
+      - name: example
+      - name: cue
+        header: "***YOUR TURN***"
+tasks:
+  - dataset: PubmedQA
+    example: |
+      Input: Question: {} Abstract: {}
+      Output: {}
+    sections:
+      instructions: Your task is to answer biomedical questions using the given abstract. Only output yes, no, or maybe as answer.
+      input-spec: The input is a question followed by an abstract.
+      output-spec: "Answer each question by providing one of the following options: yes, no, maybe."

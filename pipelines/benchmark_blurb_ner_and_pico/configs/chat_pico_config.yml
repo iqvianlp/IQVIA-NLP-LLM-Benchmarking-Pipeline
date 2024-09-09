@@ -1,0 +1,64 @@
+# Configuration for prompt template generation with prompt_gen.py.
+#
+# prompt_gen.py generates one prompt template for each task under `task` and each template under `templates`.
+#
+# A template signifies the semantic content (or "sections") of a prompt, and a template object contains:
+#
+#   - name (str): an arbitrary name for the template for reference
+#   - sections (list): the order and type of sections in the prompt, each containing:
+#       - name (str): the name of the section; must match a property of the task, except for the "example" and "cue"
+#           sections, which are populated by the example selection algorithm with the template defined in the
+#           task (see below), and actual experiment data at runtime
+#       - [optional] header (str): the text to be added as header to this section
+#
+# A task is a BLURB task and contains the following properties:
+#
+#   - dataset (str): the name of the BLURB dataset for this task
+#   - example (str): the structure of examples and cue; the actual examples will be populated by the example selection
+#       algorithm, so this is just the structure. Note that you can add as many "example" sections as you wish in the
+#       template, all will use the template defined here
+#   - section names (str): the text to go into each section of each template of the same name
+
+templates:
+  - name: short, zero-shot
+    sections:
+      - name: short-instructions
+      - name: cue
+  - name: long, zero-shot
+    sections:
+      - name: long-instructions
+      - name: output-spec
+        header: "Output Format:"
+      - name: documentation
+      - name: cue
+tasks:
+  - dataset: EBM-PICO__participant
+    example: |
+      Input: {}
+      Output: {}
+    sections:
+      short-instructions: You are an expert in the biomedical domain. You are a smart named entity recognition assistant, specialized in extracting mentions of participants of clinical trials from text. Based on the provided clinical trial report, answer with NO_ENTITIES if you find no mentions of clinical trial participants, otherwise, answer with a comma-delimited list of the mentions of clinical trial participants you find. Do not provide any explanation or other characters.
+      long-instructions: You are an expert in the biomedical domain. You are a smart named entity recognition assistant, specialized in extracting mentions of participants of clinical trials from text. I will provide you the output format, the definition of the entities you need to extract, and the sentence from which to extract the entities.
+      output-spec: Answer with a comma-separated list of clinical trial participants. If no participants are present in the sentence, answer with NO_ENTITIES. Do not provide any explanation or other characters.
+      documentation: |
+        clinical trial participant: a person who takes part in a clinical trial.
+  - dataset: EBM-PICO__intervention
+    example: |
+      Input: {}
+      Output: {}
+    sections:
+      short-instructions: You are an expert in the biomedical domain. You are a smart named entity recognition assistant, specialized in extracting mentions of interventions of clinical trials from text. Based on the provided clinical trial report, answer with NO_ENTITIES if you find no mentions of clinical trial interventions, otherwise, answer with a comma-delimited list of the mentions of clinical trial interventions you find. Do not provide any explanation or other characters.
+      long-instructions: You are an expert in the biomedical domain. You are a smart named entity recognition assistant, specialized in extracting mentions of interventions of clinical trials from text. I will provide you the output format, the definition of the entities you need to extract, and the sentence from which to extract the entities.
+      output-spec: Answer with a comma-separated list of clinical trial interventions. If no interventions are present in the sentence, answer with NO_ENTITIES. Do not provide any explanation or other characters.
+      documentation: |
+        clinical trial intervention: a potential drug, medical device, activity, or procedure.
+  - dataset: EBM-PICO__outcome
+    example: |
+      Input: {}
+      Output: {}
+    sections:
+      short-instructions: You are an expert in the biomedical domain. You are a smart named entity recognition assistant, specialized in extracting mentions of outcomes of clinical trials from text. Based on the provided clinical trial report, answer with NO_ENTITIES if you find no mentions of clinical trial outcomes, otherwise, answer with a comma-delimited list of the mentions of clinical trial outcomes you find. Do not provide any explanation or other characters.
+      long-instructions: You are an expert in the biomedical domain. You are a smart named entity recognition assistant, specialized in extracting mentions of outcomes of clinical trials from text. I will provide you the output format, the definition of the entities you need to extract, and the sentence from which to extract the entities.
+      output-spec: Answer with a comma-separated list of clinical trial outcomes. If no outcomes are present in the sentence, answer with NO_ENTITIES. Do not provide any explanation or other characters.
+      documentation: |
+        clinical trial outcome: the impact that a given intervention or exposure has on the health of clinical trial participants.

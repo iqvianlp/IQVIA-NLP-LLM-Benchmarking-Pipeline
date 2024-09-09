@@ -1,0 +1,103 @@
+# Configuration for prompt template generation with prompt_gen.py.
+#
+# prompt_gen.py generates one prompt template for each task under `task` and each template under `templates`.
+#
+# A template signifies the semantic content (or "sections") of a prompt, and a template object contains:
+#
+#   - name (str): an arbitrary name for the template for reference
+#   - sections (list): the order and type of sections in the prompt, each containing:
+#       - name (str): the name of the section; must match a property of the task, except for the "example" and "cue"
+#           sections, which are populated by the example selection algorithm with the template defined in the
+#           task (see below), and actual experiment data at runtime
+#       - [optional] header (str): the text to be added as header to this section
+#
+# A task is a BLURB task and contains the following properties:
+#
+#   - dataset (str): the name of the BLURB dataset for this task
+#   - example (str): the structure of examples and cue; the actual examples will be populated by the example selection
+#       algorithm, so this is just the structure. Note that you can add as many "example" sections as you wish in the
+#       template, all will use the template defined here
+#   - section names (str): the text to go into each section of each template of the same name
+
+templates:
+  - name: short, zero-shot
+    sections:
+      - name: short-instructions
+      - name: cue
+  - name: short, few-shot (3)
+    sections:
+      - name: short-instructions
+      - name: example
+      - name: example
+      - name: example
+      - name: cue
+  - name: long, few-shot (3)
+    sections:
+      - name: long-instructions
+      - name: output-spec
+        header: "Output Format:"
+      - name: documentation
+      - name: example
+      - name: example
+      - name: example
+      - name: cue
+  - name: long, zero-shot
+    sections:
+      - name: long-instructions
+      - name: output-spec
+        header: "Output Format:"
+      - name: documentation
+      - name: cue
+tasks:
+  - dataset: BC2GM
+    example: |
+      Input: {}
+      Output: {}
+    sections:
+      short-instructions: You are an expert in the biomedical domain. You are a smart named entity recognition assistant, specialized in extracting mentions of gene entities from text. Based on the provided sentence, answer with NO_ENTITIES if you find no mentions of gene entities, otherwise, answer with a comma-delimited list of the mentions of gene entities you find. Do not provide any explanation or other characters.
+      long-instructions: You are an expert in the biomedical domain. You are a smart named entity recognition assistant, specialized in extracting mentions of gene entities from text. I will provide you the output format, the definition of the entities you need to extract, and the sentence from which to extract the entities.
+      output-spec: Answer with a comma-separated list of gene entities. If no gene entities are present in the sentence, answer with NO_ENTITIES. Do not provide any explanation or other characters.
+      documentation: |
+        gene: a basic unit of heredity and a sequence of nucleotides in DNA.
+  - dataset: BC5-chem
+    example: |
+      Input: {}
+      Output: {}
+    sections:
+      short-instructions: You are an expert in the biomedical domain. You are a smart named entity recognition assistant, specialized in extracting mentions of chemical entities from text. Based on the provided sentence, answer with NO_ENTITIES if you find no mentions of chemical entities, otherwise, answer with a comma-delimited list of the mentions of chemical entities you find. Do not provide any explanation or other characters.
+      long-instructions: You are an expert in the biomedical domain. You are a smart named entity recognition assistant, specialized in extracting mentions of chemical entities from text. I will provide you the output format, the definition of the entities you need to extract, and the sentence from which to extract the entities.
+      output-spec: Answer with a comma-separated list of chemical entities. If no chemical entities are present in the sentence, answer with NO_ENTITIES. Do not provide any explanation or other characters.
+      documentation: |
+        chemical: a compound or substance that has been purified or prepared.
+  - dataset: BC5-disease
+    example: |
+      Input: {}
+      Output: {}
+    sections:
+      short-instructions: You are an expert in the biomedical domain. You are a smart named entity recognition assistant, specialized in extracting mentions of disease entities from text. Based on the provided sentence, answer with NO_ENTITIES if you find no mentions of disease entities, otherwise, answer with a comma-delimited list of the mentions of disease entities you find. Do not provide any explanation or other characters.
+      long-instructions: You are an expert in the biomedical domain. You are a smart named entity recognition assistant, specialized in extracting mentions of disease entities from text. I will provide you the output format, the definition of the entities you need to extract, and the sentence from which to extract the entities.
+      output-spec: Answer with a comma-separated list of disease entities. If no disease entities are present in the sentence, answer with NO_ENTITIES. Do not provide any explanation or other characters.
+      documentation: |
+        disease: a disorder of structure or function in a human, animal, or plant, especially one that has a known cause and a distinctive group of symptoms, signs, or anatomical changes.
+  - dataset: JNLPBA
+    example: |
+      Input: {}
+      Output: {}
+    sections:
+      short-instructions: You are an expert in the biomedical domain. You are a smart named entity recognition assistant, specialized in extracting mentions of protein, gene, and cell entities from text. Based on the provided sentence, answer with NO_ENTITIES if you find no mentions of protein, gene, or cell entities, otherwise, answer with a comma-delimited list of the mentions of protein, gene, or cell entities you find. Do not provide any explanation or other characters.
+      long-instructions: You are an expert in the biomedical domain. You are a smart named entity recognition assistant, specialized in extracting mentions of protein, gene, and cell entities from text. I will provide you the output format, the definition of the entities you need to extract, and the sentence from which to extract the entities.
+      output-spec: Answer with a comma-separated list of protein, gene, and cell entities. If no protein, gene, or cell entities are present in the sentence, answer with NO_ENTITIES. Do not provide any explanation or other characters.
+      documentation: |
+        cell: includes cell line (a cell culture developed from a single cell and therefore consisting of cells with a uniform genetic makeup) and cell type (a classification used to identify cells that share morphological or phenotypical features)
+        gene: a basic unit of heredity and a sequence of nucleotides in DNA.
+        protein: a large, complex molecule that play many critical roles in a living organism.
+  - dataset: NCBI-disease
+    example: |
+      Input: {}
+      Output: {}
+    sections:
+      short-instructions: You are an expert in the biomedical domain. You are a smart named entity recognition assistant, specialized in extracting mentions of disease entities from text. Based on the provided sentence, answer with NO_ENTITIES if you find no mentions of disease entities, otherwise, answer with a comma-delimited list of the mentions of disease entities you find. Do not provide any explanation or other characters.
+      long-instructions: You are an expert in the biomedical domain. You are a smart named entity recognition assistant, specialized in extracting mentions of disease entities from text. I will provide you the output format, the definition of the entities you need to extract, and the sentence from which to extract the entities.
+      output-spec: Answer with a comma-separated list of disease entities. If no disease entities are present in the sentence, answer with NO_ENTITIES. Do not provide any explanation or other characters.
+      documentation: |
+        disease: a disorder of structure or function in a human, animal, or plant, especially one that has a known cause and a distinctive group of symptoms, signs, or anatomical changes.
