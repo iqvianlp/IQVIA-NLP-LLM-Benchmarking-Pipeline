@@ -1,4 +1,4 @@
-# Benchmarking Generative LLMs against BLURB
+# IQVIA NLP LLM Benchmarking Pipeline
 
 This repository contains the pipeline code for
 [*Evaluation of Large Language Model Performance on the Biomedical Language Understanding and Reasoning Benchmark: Comparative Study*](https://www.medrxiv.org/content/10.1101/2024.05.17.24307411).
